@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        function openTab(tabName) {
+            var i, tabContent, tabLinks;
+
+            // Hide all tabs
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
+            }
+
+            // Remove the "active" class from all tab links
+            tabLinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tabLinks.length; i++) {
+                tabLinks[i].classList.remove("active");
+            }
+
+            // Show the clicked tab and add "active" class to the link
+            document.getElementById(tabName).style.display = "block";
+            document.querySelector("[data-tab='" + tabName + "']").classList.add("active");
+
+            // Save the active tab to localStorage
+            localStorage.setItem('activeTab', tabName);
+        }
+
+        // Default to open the last active tab from localStorage or the first tab if none
+        window.onload = function() {
+            var activeTab = localStorage.getItem('activeTab') || 'blocked_ips';
+            openTab(activeTab);
+        }
+    </script>
+</head>
+<body>
+    <div class="tabs">
+        <!-- Tab buttons -->
+        <button class="tab-link" data-tab="blocked_ips" onclick="openTab('blocked_ips')">Blocked IPs</button>
+        <button class="tab-link" data-tab="connected_devices" onclick="openTab('connected_devices')">Devices Connected to Your Network</button>
+    </div>
+
+    <div id="blocked_ips" class="tab-content">
+        <h2>Blocked IPs</h2>
+        <p>The following IP addresses have been blocked due to high packet rates:</p>
+        <ul>
+            {% for ip in blocked_ips %}
+                <li>{{ ip }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div id="connected_devices" class="tab-content">
+        <h2>Devices Connected to Your Network</h2>
+        <p>The following devices are currently connected to your network:</p>
+        <ul>
+            {% for device in connected_devices %}
+                <li>{{ device['ip'] }} (MAC: {{ device['mac'] }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div id="wifi_name">
+        <h2>Wi-Fi Network</h2>
+        <p>Connected to Wi-Fi Network: {{ wifi_name }}</p>
+    </div>
+
+</body>
+</html>

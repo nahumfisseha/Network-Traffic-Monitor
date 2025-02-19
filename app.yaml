@@ -1,0 +1,16 @@
+runtime: python39  # Adjust if using a different Python version
+entrypoint: gunicorn -b :$PORT app:app  # Replace 'app' with your main script name
+
+instance_class: F1  # Free tier (use B1 or higher for more power)
+
+env_variables:
+  FLASK_ENV: "production"
+
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  min_instances: 1
+  max_instances: 5
+
+handlers:
+- url: /.*
+  script: auto
